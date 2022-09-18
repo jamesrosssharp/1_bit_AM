@@ -65,8 +65,10 @@ mixer mix0
 
 // Instantiate CIC
 
-wire [15:0] x_out;
-wire out_tick;
+wire [15:0] xI_out;
+wire [15:0] xQ_out;
+wire out_tickI;
+wire out_tickQ;
 
 cic cic0
 (
@@ -74,11 +76,19 @@ cic cic0
 	RSTb,
 	I_out,
 	3'b000,
-	x_out,
-	out_tick
+	xI_out,
+	out_tickI
 );
 
-
+cic cic1
+(
+	CLK,
+	RSTb,
+	Q_out,
+	3'b000,
+	xQ_out,
+	out_tickQ
+);
 
 initial begin
 	$dumpfile("dump.vcd");

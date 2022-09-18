@@ -1,0 +1,80 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Sun Sep 18 09:00:21 2022
+[*]
+[dumpfile] "/home/jrsharp/home_mnt/code/FPGA/1_bit_AM/test/004_AM_DEMOD/dump.vcd"
+[dumpfile_mtime] "Sun Sep 18 08:58:50 2022"
+[dumpfile_size] 2301542628
+[savefile] "/home/jrsharp/home_mnt/code/FPGA/1_bit_AM/test/004_AM_DEMOD/config.gtkw"
+[timestart] 0
+[size] 1488 739
+[pos] -1 -1
+*-32.000000 41165000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[sst_width] 222
+[signals_width] 252
+[sst_expanded] 1
+[sst_vpaned_height] 200
+@28
+tb.CLK
+@200
+-
+@8420
+tb.xI_out[15:0]
+@20000
+-
+-
+-
+-
+@8420
+tb.xQ_out[15:0]
+@20000
+-
+-
+@8420
+tb.am0.I_sq[31:0]
+@20000
+-
+-
+@8420
+tb.am0.sum[32:0]
+@20000
+-
+-
+-
+-
+@22
+tb.am0.demod_out[15:0]
+@8420
+tb.demod_out[15:0]
+@20000
+-
+-
+-
+-
+@22
+tb.am0.left[17:0]
+tb.am0.right[17:0]
+tb.am0.a[31:0]
+tb.am0.q[15:0]
+tb.am0.r[17:0]
+@28
+tb.am0.state[2:0]
+tb.am0.count[1:0]
+@22
+tb.am0.count2[3:0]
+@29
+tb.am0.sqrt_state[1:0]
+@200
+-
+@22
+tb.cic0.integ5[75:0]
+@28
+tb.cic0.sample
+@22
+tb.cic0.comb5[75:0]
+tb.cic0.integ_sample[75:0]
+tb.cic0.comb1[75:0]
+tb.cic0.comb2[75:0]
+[pattern_trace] 1
+[pattern_trace] 0
