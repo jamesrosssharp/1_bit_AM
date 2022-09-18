@@ -1,0 +1,65 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Sun Sep 18 21:54:55 2022
+[*]
+[dumpfile] "/home/jrsharp/home_mnt/code/FPGA/1_bit_AM/test/005_AM_GEN/dump.vcd"
+[dumpfile_mtime] "Sun Sep 18 21:53:34 2022"
+[dumpfile_size] 856735361
+[savefile] "/home/jrsharp/home_mnt/code/FPGA/1_bit_AM/test/005_AM_GEN/config.gtkw"
+[timestart] 448824000
+[size] 1488 739
+[pos] -1 -1
+*-20.000000 451365000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[treeopen] tb.am0.
+[sst_width] 222
+[signals_width] 252
+[sst_expanded] 1
+[sst_vpaned_height] 200
+@28
+tb.CLK
+@200
+-
+@8420
+tb.am0.mod_wave_q[15:0]
+@20000
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+@200
+-
+@8420
+tb.am0.mod_scaled[31:0]
+@20000
+-
+-
+@8420
+tb.am0.mod_wave_q_noise[15:0]
+@20000
+-
+-
+-
+@8029
+tb.one_bit_rf
+@20000
+-
+-
+-
+-
+@22
+tb.am0.noise_val[15:0]
+[pattern_trace] 1
+[pattern_trace] 0
