@@ -25,22 +25,27 @@ module mixer #(parameter BITS = 16)
 reg RF_in_q;
 reg RF_in_qq;
 
+reg [BITS - 1:0] sin_q;
+reg [BITS - 1:0] cos_q;
+
 always @(posedge CLK)
 begin
 	RF_in_q <= RF_in;
 	RF_in_qq <= RF_in;
 	RF_out <= RF_in_qq;
+	sin_q <= sin_in;
+	cos_q <= cos_in;	
 end
 
 always @(posedge CLK)
 begin
 	if (RF_in_qq == 1'b0) begin
-		I_out <= -cos_in;
-		Q_out <= -sin_in;
+		I_out <= -cos_q;
+		Q_out <= -sin_q;
 	end else begin
-		I_out <= cos_in;
-		Q_out <= sin_in;
+		I_out <= cos_q;
+		Q_out <= sin_q;
 	end
 end
 
-endmodule;
+endmodule

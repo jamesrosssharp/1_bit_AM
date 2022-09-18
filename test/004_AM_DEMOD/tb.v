@@ -20,7 +20,7 @@ initial begin
 end
 
 
-wire [39:0] phase_inc = 40'h2656abde3; // 1000 Hz?
+wire [39:0] phase_inc = 40'h2656abde3; // 936 kHz
 wire [15:0] sin;
 wire [15:0] cos;
 
