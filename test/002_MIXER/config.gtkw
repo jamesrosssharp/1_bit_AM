@@ -1,0 +1,26 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Sun Sep 18 02:30:10 2022
+[*]
+[dumpfile] "/home/jrsharp/home_mnt/code/FPGA/1_bit_AM/test/002_MIXER/dump.vcd"
+[dumpfile_mtime] "Sun Sep 18 02:29:49 2022"
+[dumpfile_size] 70222824
+[savefile] "/home/jrsharp/home_mnt/code/FPGA/1_bit_AM/test/002_MIXER/config.gtkw"
+[timestart] 821240000
+[size] 1000 600
+[pos] -1 -1
+*-21.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[sst_width] 222
+[signals_width] 118
+[sst_expanded] 1
+[sst_vpaned_height] 152
+@28
+tb.CLK
+tb.RF_in
+@8420
+tb.I_out[15:0]
+@8421
+tb.Q_out[15:0]
+[pattern_trace] 1
+[pattern_trace] 0

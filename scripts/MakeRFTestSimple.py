@@ -30,7 +30,7 @@ for l in data:
 		phase_arr[i] = phase
 		phase += carrier / sampleRate
 	mod = (0.7 + 0.3*(l / 32768.0)) * np.cos(2*np.pi*phase_arr)
-	mod += np.random.normal(-0.5,0.5,interp)
+	mod += np.random.normal(0,0.5,interp)
 	#plt.plot(mod)
 	#plt.show()
 	one_bit = np.sign(mod)
