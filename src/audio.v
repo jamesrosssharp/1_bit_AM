@@ -75,7 +75,7 @@ begin
 		if (lr_clk_r == 1'b0) begin // Left channel going to right channel
 			serial_data_r_next[62:47] = DATA_IN;
 		end else begin
-			serial_data_r_next[62:47] = DATA_IN;
+			serial_data_r_next[62:47] = /*16'h0000;*/ DATA_IN;
 		end
 
 	end

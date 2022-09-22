@@ -16,8 +16,10 @@ SOURCE= $(SRCDIR)/am_demod.v	\
 	$(SRCDIR)/mixer.v	\
 	$(SRCDIR)/nco.v		\
 	$(SRCDIR)/sine_table.v	\
+	$(SRCDIR)/noise_table.v	\
 	$(SRCDIR)/cos_table.v	\
-	$(SRCDIR)/audio.v
+	$(SRCDIR)/audio.v	\
+	$(SRCDIR)/am_gen.v	
 
 SRC_FILES := $(SOURCE)
 

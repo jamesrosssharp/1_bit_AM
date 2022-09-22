@@ -31,7 +31,7 @@ reg [BITS - 1:0] cos_q;
 always @(posedge CLK)
 begin
 	RF_in_q <= RF_in;
-	RF_in_qq <= RF_in;
+	RF_in_qq <= RF_in_q;
 	RF_out <= RF_in_qq;
 	sin_q <= sin_in;
 	cos_q <= cos_in;	

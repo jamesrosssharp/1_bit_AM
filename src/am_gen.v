@@ -50,17 +50,20 @@ nco nco1
 
 /* State machine */
 
+reg signed [15:0] cos_q;
+reg signed [15:0] cos_mod_q;
+
 wire signed [15:0] mod_scale = 16'hccc;
 wire signed [31:0] mod_scaled;
 
-mult m0 (mod_scale, cos_mod, mod_scaled);
+mult m0 (mod_scale, cos_mod_q, mod_scaled);
 
 reg signed [15:0] cos_mod_scaled;
 reg signed [15:0] cos_mod_plus_dc;
 
 wire signed [31:0] mod_wave;
 
-mult m1 (cos_mod_plus_dc, cos, mod_wave);
+mult m1 (cos_mod_plus_dc, cos_q, mod_wave);
 
 reg signed [15:0] mod_wave_q;
 
@@ -76,6 +79,8 @@ reg signed [15:0] mod_wave_q_noise;
 
 always @(posedge CLK)
 begin
+	cos_mod_q <= cos_mod;
+	cos_q <= cos;
 	cos_mod_scaled <= mod_scaled[31:16];
 	cos_mod_plus_dc <= cos_mod_scaled + 16'h2ccc;
 	mod_wave_q <= mod_wave[31:16];

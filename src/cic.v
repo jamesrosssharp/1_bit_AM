@@ -29,10 +29,10 @@
  */
 
 module cic #(	
-		parameter WIDTH = 76,	/* see notes above for register width */
-		parameter DECIM = 4096,
+		parameter WIDTH = 81,	/* see notes above for register width */
+		parameter DECIM = 8192,
 		parameter BITS  = 16,
-		parameter GAIN_BITS = 3 
+		parameter GAIN_BITS = 8 
 )
 (
 	input CLK,
@@ -138,7 +138,8 @@ begin
 			comb5_in_del <= comb4;
 			comb5 <= comb4 - comb5_in_del;
 
-			x_out <= comb5 >>> (WIDTH - BITS - gain);
+			// Doesn't seem like variable gain synthesizes with yosys...
+			x_out <= comb5 >>> (WIDTH - BITS - 2 - gain);
 			out_tick <= 1'b1;
 		end else begin
 			out_tick <= 1'b0;
