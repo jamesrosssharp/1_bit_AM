@@ -11,8 +11,11 @@
 module top (
 	input	CLK12,
 	output  COMP_NEG,
-	input 	COMP_OUT,
-	output  PWM_OUT	
+	output 	PWM_OUT,
+	input   COMP0,
+	input 	COMP1,
+	input   COMP2,
+	input	COMP3	
 );
 
 // Instantiate PLL to generate 25.125 MHz
@@ -39,6 +42,25 @@ SB_PLL40_PAD #(
    .PACKAGEPIN(CLK12),
    .PLLOUTCORE(clk),
 );
+
+
+reg [2:0] RF_in;
+
+always @(posedge clk)
+begin
+	casex ({COMP3, COMP2, COMP1, COMP0})
+		4'b1xxx:
+			RF_in <= 3'b100;
+		4'b01xx:
+			RF_in <= 3'b011;
+		4'b001x:
+			RF_in <= 3'b010;
+		4'b0001:
+			RF_in <= 3'b001;
+		4'b0000:
+			RF_in <= 3'b000;
+	endcase
+end
 
 // NCO
 
@@ -69,12 +91,10 @@ nco nco0
 wire RF_out;
 assign COMP_NEG =  RF_out;
 
-wire RF_in = COMP_OUT;
-
 wire [15:0] I_out;
 wire [15:0] Q_out;
 
-mixer mix0 
+mixer_2b mix0 
 (
 	clk,
 	RSTb,
@@ -158,7 +178,7 @@ always @(posedge clk) sine_shift <= sine_data + 16'd32768;
 reg [7:0] count; 
 always @(posedge clk) count <= count + 1;
 
-assign PWM_OUT = (count < demod_out[11:4]) ? 1'b1 : 1'b0;
+assign PWM_OUT = (count < demod_out[10:3]) ? 1'b1 : 1'b0;
 
 
 endmodule

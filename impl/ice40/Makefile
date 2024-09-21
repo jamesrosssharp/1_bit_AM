@@ -13,7 +13,7 @@ SRCDIR=../../src
 SOURCE += $(SRCDIR)/am_demod.v	\
 	$(SRCDIR)/mult.v	\
 	$(SRCDIR)/cic.v		\
-	$(SRCDIR)/mixer.v	\
+	$(SRCDIR)/mixer_2bit.v	\
 	$(SRCDIR)/nco.v		\
 	$(SRCDIR)/sine_table.v	\
 	$(SRCDIR)/noise_table.v	\
