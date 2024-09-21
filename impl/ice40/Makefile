@@ -2,14 +2,23 @@ PROJ = 1_bit_am
 PIN_DEF = am.pcf
 DEVICE = up5k
 
-ARACHNE = arachne-pnr 
-ARACHNE_ARGS = 
 ICEPACK = icepack
 ICETIME = icetime
 ICEPROG = iceprog
 
-SOURCE = top.v	\
- 	 ../../src/cos_table.v	 
+SOURCE = top.v
+
+SRCDIR=../../src
+
+SOURCE += $(SRCDIR)/am_demod.v	\
+	$(SRCDIR)/mult.v	\
+	$(SRCDIR)/cic.v		\
+	$(SRCDIR)/mixer.v	\
+	$(SRCDIR)/nco.v		\
+	$(SRCDIR)/sine_table.v	\
+	$(SRCDIR)/noise_table.v	\
+	$(SRCDIR)/cos_table.v	\
+	$(SRCDIR)/audio.v	
 
 
 all: $(PROJ).bin
