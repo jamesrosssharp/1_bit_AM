@@ -11,7 +11,7 @@
 module top (
 	input	CLK12,
 	output  COMP_NEG,
-	output 	PWM_OUT,
+	output 	reg PWM_OUT,
 	input   COMP0,
 	input 	COMP1,
 	input   COMP2,
@@ -29,13 +29,20 @@ SB_PLL40_PAD #(
 		.DIVQ(3'b100),		// DIVQ =  4
 		.FILTER_RANGE(3'b001)	// FILTER_RANGE = 1
 */
-     
-   .FEEDBACK_PATH("SIMPLE"),
+.FEEDBACK_PATH("SIMPLE"),
+		.DIVR(4'b0000),		// DIVR =  0
+		.DIVF(7'b1001111),	// DIVF = 79
+		.DIVQ(3'b101),		// DIVQ =  5
+		.FILTER_RANGE(3'b001)	// FILTER_RANGE = 1
+  
+
+/*   .FEEDBACK_PATH("SIMPLE"),
    .PLLOUT_SELECT("GENCLK"),
    .DIVR(4'b0000),
    .DIVF(7'b1000010),
    .DIVQ(3'b101),
    .FILTER_RANGE(3'b001),
+*/
  ) SB_PLL40_CORE_inst (
    .RESETB(1'b1),
    .BYPASS(1'b0),
@@ -44,11 +51,17 @@ SB_PLL40_PAD #(
 );
 
 
+reg [3:0] COMP_q, COMP_qq;
+
 reg [2:0] RF_in;
 
-always @(posedge clk)
+always @(clk)
 begin
-	casex ({COMP3, COMP2, COMP1, COMP0})
+	COMP_q <= {COMP3, COMP2, COMP1, COMP0};
+	COMP_qq <= COMP_q;
+
+
+	casex (COMP_q)
 		4'b1xxx:
 			RF_in <= 3'b100;
 		4'b01xx:
@@ -66,16 +79,19 @@ end
 
 wire RSTb = 1'b1;
 
-reg [39:0] phase_inc = 40'h98975e5c5; // 936 kHz ABC Hobart
+//reg [39:0] phase_inc = 40'h98975e5c5; // 936 kHz ABC Hobart
+
+reg [39:0] phase_inc = 40'h7fcb923a2; // 936 kHz ABC Hobart @ 30MHz
+
 //reg [39:0] phase_inc = 40'h98ead65b7; // 936 kHz ABC Hobart
 
 //reg [39:0] phase_inc = 40'h5f5e9af9b; // 585 kHz ABC Hobart
 //reg [39:0] phase_inc = 40'h79c792b11; // 747 kHz ABC Hobart
 
-wire [15:0] sin;
-wire [15:0] cos;
+wire [5:0] sin;
+wire [5:0] cos;
 
-nco nco0
+nco_sq nco0
 (
 	clk,
 	RSTb,
@@ -91,10 +107,11 @@ nco nco0
 wire RF_out;
 assign COMP_NEG =  RF_out;
 
-wire [15:0] I_out;
-wire [15:0] Q_out;
+wire [5:0] I_out;
+wire [5:0] Q_out;
 
-mixer_2b mix0 
+mixer_2b
+mix0 
 (
 	clk,
 	RSTb,
@@ -118,7 +135,7 @@ wire out_tickQ;
 
 wire gain = 8'b000000;
 
-cic cic0
+cic_lite cic0
 (
 	clk,
 	RSTb,
@@ -128,7 +145,7 @@ cic cic0
 	out_tickI
 );
 
-cic cic1
+cic_lite cic1
 (
 	clk,
 	RSTb,
@@ -175,10 +192,10 @@ always @(posedge clk) sine_shift <= sine_data + 16'd32768;
 
 
 
-reg [7:0] count; 
+reg [9:0] count; 
 always @(posedge clk) count <= count + 1;
 
-assign PWM_OUT = (count < demod_out[10:3]) ? 1'b1 : 1'b0;
+always @(posedge clk) PWM_OUT <= (count < demod_out[14:5]) ? 1'b1 : 1'b0;
 
 
 endmodule

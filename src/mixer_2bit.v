@@ -7,7 +7,7 @@
  *	See LICENSE.txt for software license
  */
 
-module mixer_2b #(parameter BITS = 16)
+module mixer_2b #(parameter BITS = 6)
 (
 	input CLK,
 	input RSTb,
@@ -22,11 +22,11 @@ module mixer_2b #(parameter BITS = 16)
 	output reg signed [BITS - 1:0] Q_out	
 );
 
-reg [1:0] RF_in_q;
-reg [1:0] RF_in_qq;
+reg [2:0] RF_in_q;
+reg [2:0] RF_in_qq;
 
-reg [BITS - 1:0] sin_q;
-reg [BITS - 1:0] cos_q;
+reg signed [BITS - 1:0] sin_q;
+reg signed [BITS - 1:0] cos_q;
 
 
 always @(posedge CLK)
@@ -56,22 +56,26 @@ begin
 			Q_out <= -sin_q;
 			end
 		3'b001: begin
-			I_out <= -{cos_q[15], cos_q[15:1]};
-			Q_out <= -{sin_q[15], sin_q[15:1]};
+			I_out <= -{cos_q[5], cos_q[5:1]};
+			Q_out <= -{sin_q[5], sin_q[5:1]};
 			end
 		3'b010: begin
-			I_out <= 16'h0000;
-			Q_out <= 16'h0000;
+			I_out <= 6'd0;
+			Q_out <= 6'd0;
 			end
 		3'b011: begin
-			I_out <= {cos_q[15], cos_q[15:1]};
-			Q_out <= {sin_q[15], sin_q[15:1]};
+			I_out <= {cos_q[5], cos_q[5:1]};
+			Q_out <= {sin_q[5], sin_q[5:1]};
 			end
 		3'b100: begin
 			I_out <= cos_q;
 			Q_out <= sin_q;
 			end
 	endcase
+
+//	I_out <= cos_q[15:3] * RF_in_qq;
+//	Q_out <= sin_q[15:3] * RF_in_qq;
+
 
 end
 

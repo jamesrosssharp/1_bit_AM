@@ -28,10 +28,10 @@
  *		B_max = |  5 * 12 + 16 - 1  | = 75 bits
  */
 
-module cic #(	
-		parameter WIDTH = 75,	/* see notes above for register width */
+module cic_lite #(	
+		parameter WIDTH = 65,	/* see notes above for register width */
 		parameter DECIM = 4096,
-		parameter BITS  = 16,
+		parameter BITS  = 6,
 		parameter GAIN_BITS = 8 
 )
 (
@@ -41,7 +41,7 @@ module cic #(
 	input signed [BITS - 1:0] x_in,
 	input [GAIN_BITS - 1:0]   gain,
 
-	output reg signed [BITS - 1:0] x_out,
+	output reg signed [15:0] x_out,
 
 	output reg out_tick /* tick goes high for 1 clock cycle when an output sample is ready */
 
@@ -78,7 +78,7 @@ begin
 		count <= {COUNTER_BITS{1'b0}};
 		sample <= 1'b0;
 	end else begin
-		integ1 <= integ1 + x_in;
+		integ1 <= integ1 + $signed(x_in);
 		integ2 <= integ2 + integ1;
 		integ3 <= integ3 + integ2;
 		integ4 <= integ4 + integ3;
@@ -119,7 +119,7 @@ begin
 		comb4_in_del <= {WIDTH{1'b0}};
 		comb5_in_del <= {WIDTH{1'b0}};
 		out_tick <= 1'b0;
-		x_out <= {BITS{1'b0}};
+		x_out <= {16{1'b0}};
 	end
 	else begin
 		if (sample == 1'b1) begin
@@ -139,7 +139,7 @@ begin
 			comb5 <= comb4 - comb5_in_del;
 
 			// Doesn't seem like variable gain synthesizes with yosys...
-			x_out <= comb5 >>> (WIDTH - BITS - 1 - gain);
+			x_out <= comb5 >>> (WIDTH - 16 - 1);
 			out_tick <= 1'b1;
 		end else begin
 			out_tick <= 1'b0;
