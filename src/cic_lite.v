@@ -29,7 +29,7 @@
  */
 
 module cic_lite #(	
-		parameter WIDTH = 65,	/* see notes above for register width */
+		parameter WIDTH = 29,	/* see notes above for register width */
 		parameter DECIM = 4096,
 		parameter BITS  = 6,
 		parameter GAIN_BITS = 8 
@@ -50,9 +50,6 @@ module cic_lite #(
 /* 5 integrator stages */
 reg signed [WIDTH - 1:0] integ1;
 reg signed [WIDTH - 1:0] integ2;
-reg signed [WIDTH - 1:0] integ3;
-reg signed [WIDTH - 1:0] integ4;
-reg signed [WIDTH - 1:0] integ5;
 
 
 /* Counter to determine when to tap off a sample into the comb section */
@@ -70,9 +67,6 @@ begin
 	begin
 		integ1 <= {WIDTH{1'b0}};
 		integ2 <= {WIDTH{1'b0}};
-		integ3 <= {WIDTH{1'b0}};
-		integ4 <= {WIDTH{1'b0}};
-		integ5 <= {WIDTH{1'b0}};
 		//out_tick <= 1'b0;
 		//x_out <= {BITS{1'b0}};
 		count <= {COUNTER_BITS{1'b0}};
@@ -80,16 +74,13 @@ begin
 	end else begin
 		integ1 <= integ1 + $signed(x_in);
 		integ2 <= integ2 + integ1;
-		integ3 <= integ3 + integ2;
-		integ4 <= integ4 + integ3;
-		integ5 <= integ5 + integ4;
 		count <= count + 1;
 
 		if (count == DECIM - 1)
 		begin
 			count <= {COUNTER_BITS{1'b0}};
 			sample <= 1'b1;
-			integ_sample <= integ5;
+			integ_sample <= integ2;
 		end else begin
 			sample <= 1'b0;
 		end
@@ -101,8 +92,6 @@ end
 reg signed [WIDTH - 1:0] comb1, comb1_in_del;
 reg signed [WIDTH - 1:0] comb2, comb2_in_del;
 reg signed [WIDTH - 1:0] comb3, comb3_in_del;
-reg signed [WIDTH - 1:0] comb4, comb4_in_del;
-reg signed [WIDTH - 1:0] comb5, comb5_in_del;
 
 always @(posedge CLK)
 begin
@@ -111,13 +100,9 @@ begin
 		comb1 <= {WIDTH{1'b0}};
 		comb2 <= {WIDTH{1'b0}};
 		comb3 <= {WIDTH{1'b0}};
-		comb4 <= {WIDTH{1'b0}};
-		comb5 <= {WIDTH{1'b0}};
 		comb1_in_del <= {WIDTH{1'b0}};
 		comb2_in_del <= {WIDTH{1'b0}};
 		comb3_in_del <= {WIDTH{1'b0}};
-		comb4_in_del <= {WIDTH{1'b0}};
-		comb5_in_del <= {WIDTH{1'b0}};
 		out_tick <= 1'b0;
 		x_out <= {16{1'b0}};
 	end
@@ -129,17 +114,8 @@ begin
 			comb2_in_del <= comb1;
 			comb2 <= comb1 - comb2_in_del;
 
-			comb3_in_del <= comb2;
-			comb3 <= comb2 - comb3_in_del;
-
-			comb4_in_del <= comb3;
-			comb4 <= comb3 - comb4_in_del;
-
-			comb5_in_del <= comb4;
-			comb5 <= comb4 - comb5_in_del;
-
 			// Doesn't seem like variable gain synthesizes with yosys...
-			x_out <= comb5 >>> (WIDTH - 16 - 1);
+			x_out <= comb2 >>> (WIDTH - 16 - 1);
 			out_tick <= 1'b1;
 		end else begin
 			out_tick <= 1'b0;

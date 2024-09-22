@@ -29,12 +29,18 @@ SB_PLL40_PAD #(
 		.DIVQ(3'b100),		// DIVQ =  4
 		.FILTER_RANGE(3'b001)	// FILTER_RANGE = 1
 */
-.FEEDBACK_PATH("SIMPLE"),
+/*.FEEDBACK_PATH("SIMPLE"),
 		.DIVR(4'b0000),		// DIVR =  0
 		.DIVF(7'b1001111),	// DIVF = 79
 		.DIVQ(3'b101),		// DIVQ =  5
 		.FILTER_RANGE(3'b001)	// FILTER_RANGE = 1
-  
+  */
+.FEEDBACK_PATH("SIMPLE"),
+		.DIVR(4'b0000),		// DIVR =  0
+		.DIVF(7'b1000010),	// DIVF = 66
+		.DIVQ(3'b100),		// DIVQ =  4
+		.FILTER_RANGE(3'b001)	// FILTER_RANGE = 1
+
 
 /*   .FEEDBACK_PATH("SIMPLE"),
    .PLLOUT_SELECT("GENCLK"),
@@ -81,7 +87,8 @@ wire RSTb = 1'b1;
 
 //reg [39:0] phase_inc = 40'h98975e5c5; // 936 kHz ABC Hobart
 
-reg [39:0] phase_inc = 40'h7fcb923a2; // 936 kHz ABC Hobart @ 30MHz
+//reg [39:0] phase_inc = 40'h7fcb923a2; // 936 kHz ABC Hobart @ 30MHz
+reg [39:0] phase_inc = 40'h4c4baf2e2; // 936 kHz ABC Hobart @ 50MHz
 
 //reg [39:0] phase_inc = 40'h98ead65b7; // 936 kHz ABC Hobart
 

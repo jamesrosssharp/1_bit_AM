@@ -27,7 +27,7 @@ $(PROJ).json: $(SOURCE)
 	yosys -p 'debug synth_ice40 -dsp -top top -json $@' $(SOURCE)
 
 %.asc: $(PIN_DEF) %.json
-	nextpnr-ice40 --timing-allow-fail --randomize-seed --freq 25.125 --up5k --json $(PROJ).json --pcf $(PIN_DEF) --asc $@
+	nextpnr-ice40 --timing-allow-fail --randomize-seed --freq 50.25 --up5k --json $(PROJ).json --pcf $(PIN_DEF) --asc $@
 
 %.bin: %.asc
 	$(ICEPACK) $< $@
