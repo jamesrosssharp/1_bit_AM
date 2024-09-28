@@ -29,7 +29,7 @@
  */
 
 module cic_lite #(	
-		parameter WIDTH = 27,	/* see notes above for register width */
+		parameter WIDTH = 21,	/* see notes above for register width */
 		parameter DECIM = 64,
 		parameter BITS  = 8,
 		parameter GAIN_BITS = 8 
@@ -61,7 +61,7 @@ reg [COUNTER_BITS - 1:0] count;
 
 reg sample;
 
-reg signed [WIDTH - 1 - 6:0] integ_sample;
+reg signed [WIDTH - 1 - 3:0] integ_sample;
 
 // Integrator section
 always @(posedge CLK)
@@ -81,7 +81,7 @@ begin
 	end else if (in_tick == 1'b1) begin
 		integ1 <= integ1 + $signed(x_in);
 		integ2 <= integ2 + integ1[WIDTH - 1 : 3];
-		integ3 <= integ3 + integ2[WIDTH - 1 - 3 : 3];
+	//	integ3 <= integ3 + integ2[WIDTH - 1 - 3 : 3];
 
 		count <= count + 1;
 
@@ -89,16 +89,16 @@ begin
 		begin
 			count <= {COUNTER_BITS{1'b0}};
 			sample <= 1'b1;
-			integ_sample <= integ3;
+			integ_sample <= integ2;
 		end
 	end
 end
 
 // Comb section
 
-reg signed [WIDTH - 1 - 6:0] comb1, comb1_in_del;
-reg signed [WIDTH - 1 - 6:0] comb2, comb2_in_del;
-reg signed [WIDTH - 1 - 6:0] comb3, comb3_in_del;
+reg signed [WIDTH - 1 - 3:0] comb1, comb1_in_del;
+reg signed [WIDTH - 1 - 3:0] comb2, comb2_in_del;
+reg signed [WIDTH - 1 - 3:0] comb3, comb3_in_del;
 
 always @(posedge CLK)
 begin
@@ -121,11 +121,11 @@ begin
 			comb2_in_del <= comb1;
 			comb2 <= comb1 - comb2_in_del;
 
-			comb3_in_del <= comb2;
-			comb3 <= comb2 - comb3_in_del;
+		//	comb3_in_del <= comb2;
+		//	comb3 <= comb2 - comb3_in_del;
 
 			// Doesn't seem like variable gain synthesizes with yosys...
-			x_out <= comb3 >>> (WIDTH - 16 - 6 - 1);
+			x_out <= comb2 >>> (WIDTH - 16 - 3 - 1);
 			out_tick <= 1'b1;
 		end else begin
 			out_tick <= 1'b0;
