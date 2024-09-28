@@ -4,3 +4,7 @@ set_io COMP_NEG 4
 set_io PWM_OUT 3
 set_io COMP0  48
 
+set_io SCK	15
+set_io MOSI	17
+set_io CS 	16
+

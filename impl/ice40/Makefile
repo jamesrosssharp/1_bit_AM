@@ -18,7 +18,8 @@ SOURCE += $(SRCDIR)/am_demod_lite.v	\
 	$(SRCDIR)/sine_table_lite.v	\
 	$(SRCDIR)/noise_table.v	\
 	$(SRCDIR)/cos_table_lite.v	\
-	$(SRCDIR)/audio.v	
+	$(SRCDIR)/audio.v		\
+	$(SRCDIR)/spi.v	
 
 
 all: $(PROJ).bin

@@ -12,46 +12,24 @@ module top (
 	input	CLK12,
 	output  COMP_NEG,
 	output 	reg PWM_OUT,
-	input   COMP0
+	input   COMP0,
+
+	input 	SCK,
+	input	MOSI,
+	input	CS
+
 );
 
-// Instantiate PLL to generate 25.125 MHz
+// Instantiate PLL to generate 50.25 MHz
 
 wire clk;
 
 SB_PLL40_PAD #(
-/*.FEEDBACK_PATH("SIMPLE"),
-		.DIVR(4'b0000),		// DIVR =  0
-		.DIVF(7'b0111111),	// DIVF = 63
-		.DIVQ(3'b100),		// DIVQ =  4
-		.FILTER_RANGE(3'b001)	// FILTER_RANGE = 1
-*/
-/*.FEEDBACK_PATH("SIMPLE"),
-		.DIVR(4'b0000),		// DIVR =  0
-		.DIVF(7'b1001111),	// DIVF = 79
-		.DIVQ(3'b101),		// DIVQ =  5
-		.FILTER_RANGE(3'b001)	// FILTER_RANGE = 1
-  */
 .FEEDBACK_PATH("SIMPLE"),
 		.DIVR(4'b0000),		// DIVR =  0
 		.DIVF(7'b1000010),	// DIVF = 66
 		.DIVQ(3'b100),		// DIVQ =  4
 		.FILTER_RANGE(3'b001)	// FILTER_RANGE = 1
-
-/*.FEEDBACK_PATH("SIMPLE"),
-		.DIVR(4'b0000),		// DIVR =  0
-		.DIVF(7'b1001000),	// DIVF = 72
-		.DIVQ(3'b100),		// DIVQ =  4
-		.FILTER_RANGE(3'b001)	// FILTER_RANGE = 1
-*/
-
-/*   .FEEDBACK_PATH("SIMPLE"),
-   .PLLOUT_SELECT("GENCLK"),
-   .DIVR(4'b0000),
-   .DIVF(7'b1000010),
-   .DIVQ(3'b101),
-   .FILTER_RANGE(3'b001),
-*/
  ) SB_PLL40_CORE_inst (
    .RESETB(1'b1),
    .BYPASS(1'b0),
@@ -59,12 +37,27 @@ SB_PLL40_PAD #(
    .PLLOUTCORE(clk),
 );
 
+wire [25:0] phase_inc;
+wire [3:0]  gain_spi;
+
+spi spi0
+(
+    clk,
+    RSTb,
+    MOSI,
+    SCK,
+    CS,
+
+    phase_inc,
+    gain_spi
+
+);
 
 // NCO
 
 wire RSTb = 1'b1;
 
-reg [25:0] phase_inc = 26'h1312eb; // 936 kHz ABC Hobart @ 50.25MHz
+//reg [25:0] phase_inc = 26'h1312eb; // 936 kHz ABC Hobart @ 50.25MHz
 //reg [25:0] phase_inc = 26'hbebd3; // 585 kHz ABC Hobart @ 50.25 MHz
 //reg [25:0] phase_inc = 26'h213229; // SEN 1629kHz
 
@@ -187,29 +180,27 @@ am_demod_lite am0
 );
 
 
-// Generate sine wave to PWM
-
-/*reg [15:0] counter = 16'h0000;
-
-wire [9:0] sine_addr = counter[15:6];
-wire signed [15:0] sine_data;
-
-always @(posedge clk)
-	counter <= counter + 1;
-
-cosTable c0 (clk, sine_addr, sine_data);
-
-// PWM
-
-reg [15:0] sine_shift;
-always @(posedge clk) sine_shift <= sine_data + 16'd32768;
-*/
-
-
 reg [7:0] count; 
 always @(posedge clk) count <= count + 1;
 
-always @(posedge clk) PWM_OUT <= (count < demod_out[13:6]) ? 1'b1 : 1'b0;
+always @(posedge clk) begin
+	case (gain_spi[2:0])
+		3'b000:
+			PWM_OUT <= (count < demod_out[15:8]) ? 1'b1 : 1'b0;
+		3'b001:
+			PWM_OUT <= (count < demod_out[14:7]) ? 1'b1 : 1'b0;
+		3'b010:
+			PWM_OUT <= (count < demod_out[13:6]) ? 1'b1 : 1'b0;
+		3'b011:
+			PWM_OUT <= (count < demod_out[12:5]) ? 1'b1 : 1'b0;
+		3'b100:	
+			PWM_OUT <= (count < demod_out[11:4]) ? 1'b1 : 1'b0;
+		default:	
+			PWM_OUT <= (count < demod_out[10:3]) ? 1'b1 : 1'b0;
+	endcase
+end
+
+//always @(posedge clk) PWM_OUT <= (count < phase_inc[7:0]) ? 1'b1 : 1'b0;
 
 
 endmodule
