@@ -29,7 +29,7 @@
  */
 
 module cic #(	
-		parameter WIDTH = 75,	/* see notes above for register width */
+		parameter WIDTH = 76,	/* see notes above for register width */
 		parameter DECIM = 4096,
 		parameter BITS  = 16,
 		parameter GAIN_BITS = 8 

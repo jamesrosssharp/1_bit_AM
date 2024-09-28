@@ -64,22 +64,7 @@ SB_PLL40_PAD #(
 
 wire RSTb = 1'b1;
 
-//reg [39:0] phase_inc = 40'h98975e5c5; // 936 kHz ABC Hobart
-
-//reg [39:0] phase_inc = 40'h7fcb923a2; // 936 kHz ABC Hobart @ 30MHz
-reg [39:0] phase_inc = 40'h4c4baf2e2; // 936 kHz ABC Hobart @ 50MHz
-//reg [39:0] phase_inc = 40'h4c4baf000; // 936 kHz ABC Hobart @ 50MHz
-
-
-//reg [39:0] phase_inc = 40'h460657236; // 936 kHz ABC Hobart @ 54.75MHz
-
-//reg [39:0] phase_inc = 40'h98ead65b7; // 936 kHz ABC Hobart
-
-//reg [39:0] phase_inc = 40'h5f5e9af9b; // 585 kHz ABC Hobart
-//reg [39:0] phase_inc = 40'h2faf4d7cd; // 585 kHz ABC Hobart @ 50MHz
-
-
-//reg [39:0] phase_inc = 40'h79c792b11; // 747 kHz ABC Hobart
+reg [25:0] phase_inc = 40'h1312eb; // 936 kHz ABC Hobart @ 50MHz
 
 wire [7:0] sin;
 wire [7:0] cos;
@@ -185,13 +170,13 @@ cic_lite cic3
 wire out_tick;
 wire [15:0] demod_out;
 
-am_demod am0 
+am_demod_lite am0 
 (
 	clk,
 	RSTb,
 
-	xI_out2,
-	xQ_out2,
+	xI_out2[15:8],
+	xQ_out2[15:8],
 	out_tickI_2,	/* tick should go high when new sample is ready */
 
 	demod_out,

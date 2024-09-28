@@ -1,7 +1,7 @@
 
 SRCDIR=../../src
 
-SOURCE= $(SRCDIR)/am_demod.v	\
+SOURCE= $(SRCDIR)/am_demod_lite.v	\
 	$(SRCDIR)/mult.v	\
 	$(SRCDIR)/cic_lite.v	\
 	$(SRCDIR)/mixer_2bit.v	\

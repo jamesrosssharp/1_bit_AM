@@ -8,7 +8,7 @@
 
 module nco_sq 
 #(
-	parameter PHASE_INC_BITS = 40,	/* 40 bits gives approx 0.1 Hz resolution @ 100MHz */
+	parameter PHASE_INC_BITS = 26,	/* 26 bits gives approx 1 Hz resolution @ 50MHz */
 	parameter BITS = 8 		/* 4 bits */
 )
 (

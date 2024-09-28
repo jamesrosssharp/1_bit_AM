@@ -20,7 +20,7 @@ initial begin
 end
 
 
-wire [39:0] phase_inc = 40'h2656abde3; // 936 kHz
+wire [25:0] phase_inc = 26'h995aa; // 936 kHz
 wire [7:0] sin;
 wire [7:0] cos;
 
@@ -122,13 +122,13 @@ cic_lite cic3
 wire out_tick;
 wire [15:0] demod_out;
 
-am_demod am0 
+am_demod_lite am0 
 (
 	CLK,
 	RSTb,
 
-	xI_out2,
-	xQ_out2,
+	xI_out2[15:8],
+	xQ_out2[15:8],
 	out_tickI2,	/* tick should go high when new sample is ready */
 
 	demod_out,
