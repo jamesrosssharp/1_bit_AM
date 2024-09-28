@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Sat Sep 28 04:12:58 2024
+[*] Sat Sep 28 05:47:41 2024
 [*]
 [dumpfile] "/home/jrsharp/home_mnt/code/FPGA/1_bit_AM/test/006_AM_LITE/dump.vcd"
-[dumpfile_mtime] "Sat Sep 28 04:11:44 2024"
-[dumpfile_size] 648784400
+[dumpfile_mtime] "Sat Sep 28 05:46:49 2024"
+[dumpfile_size] 633387259
 [savefile] "/home/jrsharp/home_mnt/code/FPGA/1_bit_AM/test/006_AM_LITE/config.gtkw"
-[timestart] 0
+[timestart] 2334959000
 [size] 1488 739
 [pos] -1 -1
-*-32.000000 2335595000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-18.000000 2335595000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [sst_width] 222
 [signals_width] 252
@@ -18,7 +18,7 @@
 @28
 tb.CLK
 tb.cic0.RSTb
-@23
+@22
 tb.am0.sum[16:0]
 @200
 -
@@ -52,6 +52,11 @@ tb.xQ_out2[15:0]
 -
 -
 @22
+tb.am0.a[15:0]
+tb.am0.r[9:0]
+@23
+tb.am0.q[7:0]
+@22
 tb.am0.demod_out[15:0]
 @8420
 tb.demod_out[15:0]
@@ -60,12 +65,6 @@ tb.demod_out[15:0]
 -
 -
 -
-@22
-tb.am0.left[17:0]
-tb.am0.right[17:0]
-tb.am0.a[31:0]
-tb.am0.q[15:0]
-tb.am0.r[17:0]
 @28
 tb.am0.count[1:0]
 @22

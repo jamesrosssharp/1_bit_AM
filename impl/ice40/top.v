@@ -64,7 +64,9 @@ SB_PLL40_PAD #(
 
 wire RSTb = 1'b1;
 
-reg [25:0] phase_inc = 40'h1312eb; // 936 kHz ABC Hobart @ 50MHz
+reg [25:0] phase_inc = 26'h1312eb; // 936 kHz ABC Hobart @ 50.25MHz
+//reg [25:0] phase_inc = 26'hbebd3; // 585 kHz ABC Hobart @ 50.25 MHz
+//reg [25:0] phase_inc = 26'h213229; // SEN 1629kHz
 
 wire [7:0] sin;
 wire [7:0] cos;
@@ -207,7 +209,7 @@ always @(posedge clk) sine_shift <= sine_data + 16'd32768;
 reg [7:0] count; 
 always @(posedge clk) count <= count + 1;
 
-always @(posedge clk) PWM_OUT <= (count < demod_out[15:8]) ? 1'b1 : 1'b0;
+always @(posedge clk) PWM_OUT <= (count < demod_out[13:6]) ? 1'b1 : 1'b0;
 
 
 endmodule

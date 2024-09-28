@@ -6,8 +6,8 @@ SOURCE= $(SRCDIR)/am_demod_lite.v	\
 	$(SRCDIR)/cic_lite.v	\
 	$(SRCDIR)/mixer_2bit.v	\
 	$(SRCDIR)/nco_sq.v	\
-	$(SRCDIR)/sine_table.v	\
-	$(SRCDIR)/cos_table.v
+	$(SRCDIR)/sine_table_lite.v	\
+	$(SRCDIR)/cos_table_lite.v
 
  
 PROJECT=am_demod

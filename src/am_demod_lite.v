@@ -126,21 +126,21 @@ reg [1:0] sqrt_state;
  *
  */
 
-reg [BITS*2-1:0] a;
-reg [BITS-1:0] q;
-reg [BITS+1:0] left, right, r;
+reg [BITS-1:0] a;
+reg [BITS_IN-1:0] q;
+reg [BITS_IN+1:0] left, right, r;
 
 reg [1:0] count;
 reg [3:0] count2;
     
    
-localparam BITS_PLUS_2 = BITS + 2;
+localparam BITS_PLUS_2 = BITS_IN + 2;
 
 always @(posedge CLK)
 begin
 	if (RSTb == 1'b0) begin
 		sqrt_state <= 2'd0;
-		demod_out <= {BITS{1'b0}};
+		demod_out <= {BITS_IN{1'b0}};
 		out_tick <= 1'b0;
 	end else begin
 
@@ -152,11 +152,11 @@ begin
 					sqrt_state <= sqrt_state + 1;		
 			end
 			2'd1: begin
-				a <= {sum[BITS:1], 16'd0};
+				a <= sum[BITS:1];
 				left <= {BITS_PLUS_2{1'b0}};
 				right <= {BITS_PLUS_2{1'b0}};
 				r <= {BITS_PLUS_2{1'b0}};
-				q <= {BITS{1'b0}};
+				q <= {BITS_IN{1'b0}};
 				sqrt_state <= sqrt_state + 1;
 				count <= 2'd0;
 				count2 <= 4'd0;
@@ -166,7 +166,7 @@ begin
 				case (count)
 					2'd0: begin
 						right <= {q,r[BITS_PLUS_2 - 1],1'b1};
-						left  <= {r[BITS - 1:0],a[2*BITS - 1:2*BITS - 2]};
+						left  <= {r[BITS_IN - 1:0],a[2*BITS_IN - 1:2*BITS_IN - 2]};
 						a     <= {a[2*BITS - 3:0],2'b00};    //left shift by 2 bits.
 						count <= count + 1;
 					end
@@ -179,10 +179,10 @@ begin
 						count <= count + 1;
 					end
 					2'd2: begin
-						q <= {q[BITS - 2:0],!r[BITS_PLUS_2 - 1]}; 
+						q <= {q[BITS_IN - 2:0],!r[BITS_PLUS_2 - 1]}; 
 						count <= 2'd0;
 						count2 <= count2 + 1;
-						if (count2 == 4'd15)
+						if (count2 == 4'd7)
 							sqrt_state <= sqrt_state + 1;
 					end
 				endcase	
@@ -191,7 +191,7 @@ begin
 			2'd3: begin
 				out_tick <= 1'b1;
 				sqrt_state <= 2'd0;	
-				demod_out <= q;
+				demod_out <= {q,8'd0};
 				sqrt_done <= 1'b1;
 			end
 			default:
