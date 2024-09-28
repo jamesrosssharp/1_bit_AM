@@ -29,14 +29,16 @@
  */
 
 module cic_lite #(	
-		parameter WIDTH = 29,	/* see notes above for register width */
-		parameter DECIM = 4096,
-		parameter BITS  = 6,
+		parameter WIDTH = 27,	/* see notes above for register width */
+		parameter DECIM = 64,
+		parameter BITS  = 8,
 		parameter GAIN_BITS = 8 
 )
 (
 	input CLK,
 	input RSTb,
+
+	input in_tick,
 
 	input signed [BITS - 1:0] x_in,
 	input [GAIN_BITS - 1:0]   gain,
@@ -50,6 +52,7 @@ module cic_lite #(
 /* 5 integrator stages */
 reg signed [WIDTH - 1:0] integ1;
 reg signed [WIDTH - 1:0] integ2;
+reg signed [WIDTH - 1:0] integ3;
 
 
 /* Counter to determine when to tap off a sample into the comb section */
@@ -63,26 +66,30 @@ reg signed [WIDTH - 1:0] integ_sample;
 // Integrator section
 always @(posedge CLK)
 begin
+
+	sample <= 1'b0;
+
 	if (RSTb == 1'b0)
 	begin
 		integ1 <= {WIDTH{1'b0}};
 		integ2 <= {WIDTH{1'b0}};
+		integ3 <= {WIDTH{1'b0}};
 		//out_tick <= 1'b0;
 		//x_out <= {BITS{1'b0}};
 		count <= {COUNTER_BITS{1'b0}};
 		sample <= 1'b0;
-	end else begin
+	end else if (in_tick == 1'b1) begin
 		integ1 <= integ1 + $signed(x_in);
 		integ2 <= integ2 + integ1;
+		integ3 <= integ3 + integ2;
+
 		count <= count + 1;
 
 		if (count == DECIM - 1)
 		begin
 			count <= {COUNTER_BITS{1'b0}};
 			sample <= 1'b1;
-			integ_sample <= integ2;
-		end else begin
-			sample <= 1'b0;
+			integ_sample <= integ3;
 		end
 	end
 end
@@ -108,14 +115,17 @@ begin
 	end
 	else begin
 		if (sample == 1'b1) begin
-			comb1_in_del <= integ_sample;
+			comb1_in_del <= $signed(integ_sample);
 			comb1 <= integ_sample - comb1_in_del;
 
 			comb2_in_del <= comb1;
 			comb2 <= comb1 - comb2_in_del;
 
+			comb3_in_del <= comb2;
+			comb3 <= comb2 - comb3_in_del;
+
 			// Doesn't seem like variable gain synthesizes with yosys...
-			x_out <= comb2 >>> (WIDTH - 16 - 1);
+			x_out <= comb3 >>> (WIDTH - 16  - 1);
 			out_tick <= 1'b1;
 		end else begin
 			out_tick <= 1'b0;

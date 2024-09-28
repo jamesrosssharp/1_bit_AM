@@ -3,7 +3,4 @@ set_io CLK12	35
 set_io COMP_NEG 4
 set_io PWM_OUT 3
 set_io COMP0  48
-set_io COMP1  45
-set_io COMP2  47
-set_io COMP3  44
 

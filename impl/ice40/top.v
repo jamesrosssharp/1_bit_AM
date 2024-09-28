@@ -12,10 +12,7 @@ module top (
 	input	CLK12,
 	output  COMP_NEG,
 	output 	reg PWM_OUT,
-	input   COMP0,
-	input 	COMP1,
-	input   COMP2,
-	input	COMP3	
+	input   COMP0
 );
 
 // Instantiate PLL to generate 25.125 MHz
@@ -41,6 +38,12 @@ SB_PLL40_PAD #(
 		.DIVQ(3'b100),		// DIVQ =  4
 		.FILTER_RANGE(3'b001)	// FILTER_RANGE = 1
 
+/*.FEEDBACK_PATH("SIMPLE"),
+		.DIVR(4'b0000),		// DIVR =  0
+		.DIVF(7'b1001000),	// DIVF = 72
+		.DIVQ(3'b100),		// DIVQ =  4
+		.FILTER_RANGE(3'b001)	// FILTER_RANGE = 1
+*/
 
 /*   .FEEDBACK_PATH("SIMPLE"),
    .PLLOUT_SELECT("GENCLK"),
@@ -57,30 +60,6 @@ SB_PLL40_PAD #(
 );
 
 
-reg [3:0] COMP_q, COMP_qq;
-
-reg [2:0] RF_in;
-
-always @(clk)
-begin
-	COMP_q <= {COMP3, COMP2, COMP1, COMP0};
-	COMP_qq <= COMP_q;
-
-
-	casex (COMP_q)
-		4'b1xxx:
-			RF_in <= 3'b100;
-		4'b01xx:
-			RF_in <= 3'b011;
-		4'b001x:
-			RF_in <= 3'b010;
-		4'b0001:
-			RF_in <= 3'b001;
-		4'b0000:
-			RF_in <= 3'b000;
-	endcase
-end
-
 // NCO
 
 wire RSTb = 1'b1;
@@ -89,14 +68,21 @@ wire RSTb = 1'b1;
 
 //reg [39:0] phase_inc = 40'h7fcb923a2; // 936 kHz ABC Hobart @ 30MHz
 reg [39:0] phase_inc = 40'h4c4baf2e2; // 936 kHz ABC Hobart @ 50MHz
+//reg [39:0] phase_inc = 40'h4c4baf000; // 936 kHz ABC Hobart @ 50MHz
+
+
+//reg [39:0] phase_inc = 40'h460657236; // 936 kHz ABC Hobart @ 54.75MHz
 
 //reg [39:0] phase_inc = 40'h98ead65b7; // 936 kHz ABC Hobart
 
 //reg [39:0] phase_inc = 40'h5f5e9af9b; // 585 kHz ABC Hobart
+//reg [39:0] phase_inc = 40'h2faf4d7cd; // 585 kHz ABC Hobart @ 50MHz
+
+
 //reg [39:0] phase_inc = 40'h79c792b11; // 747 kHz ABC Hobart
 
-wire [5:0] sin;
-wire [5:0] cos;
+wire [7:0] sin;
+wire [7:0] cos;
 
 nco_sq nco0
 (
@@ -114,8 +100,8 @@ nco_sq nco0
 wire RF_out;
 assign COMP_NEG =  RF_out;
 
-wire [5:0] I_out;
-wire [5:0] Q_out;
+wire [7:0] I_out;
+wire [7:0] Q_out;
 
 mixer_2b
 mix0 
@@ -123,7 +109,7 @@ mix0
 	clk,
 	RSTb,
 
-	RF_in,
+	COMP0,
 	RF_out,
 
 	sin,
@@ -140,12 +126,20 @@ wire [15:0] xQ_out;
 wire out_tickI;
 wire out_tickQ;
 
+wire [15:0] xI_out2;
+wire [15:0] xQ_out2;
+wire out_tickI_2;
+wire out_tickQ_2;
+
+
+
 wire gain = 8'b000000;
 
 cic_lite cic0
 (
 	clk,
 	RSTb,
+	1'b1,
 	I_out,
 	gain,
 	xI_out,
@@ -156,11 +150,37 @@ cic_lite cic1
 (
 	clk,
 	RSTb,
+	1'b1,
 	Q_out,
 	gain,
 	xQ_out,
 	out_tickQ
 );
+
+cic_lite cic2
+(
+	clk,
+	RSTb,
+	out_tickI,
+	xI_out[15:8],
+	gain,
+	xI_out2,
+	out_tickI_2
+);
+
+cic_lite cic3
+(
+	clk,
+	RSTb,
+	out_tickQ,
+	xQ_out[15:8],
+	gain,
+	xQ_out2,
+	out_tickQ_2
+);
+
+
+
 
 wire out_tick;
 wire [15:0] demod_out;
@@ -170,9 +190,9 @@ am_demod am0
 	clk,
 	RSTb,
 
-	xI_out,
-	xQ_out,
-	out_tickI,	/* tick should go high when new sample is ready */
+	xI_out2,
+	xQ_out2,
+	out_tickI_2,	/* tick should go high when new sample is ready */
 
 	demod_out,
 	out_tick	/* tick will go high when the new AM demodulated sample is ready */
@@ -182,7 +202,7 @@ am_demod am0
 
 // Generate sine wave to PWM
 
-reg [15:0] counter = 16'h0000;
+/*reg [15:0] counter = 16'h0000;
 
 wire [9:0] sine_addr = counter[15:6];
 wire signed [15:0] sine_data;
@@ -196,13 +216,13 @@ cosTable c0 (clk, sine_addr, sine_data);
 
 reg [15:0] sine_shift;
 always @(posedge clk) sine_shift <= sine_data + 16'd32768;
+*/
 
 
-
-reg [9:0] count; 
+reg [7:0] count; 
 always @(posedge clk) count <= count + 1;
 
-always @(posedge clk) PWM_OUT <= (count < demod_out[14:5]) ? 1'b1 : 1'b0;
+always @(posedge clk) PWM_OUT <= (count < demod_out[15:8]) ? 1'b1 : 1'b0;
 
 
 endmodule
